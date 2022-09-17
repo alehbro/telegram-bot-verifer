@@ -31,7 +31,7 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/get-cards', async (req, res) => {
-    var URL = 'https://ksp.co.il/web/cat/35..1044..15848';
+    var URL = process.env.URL_FOR_SCRAPING;
 
     const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox'], headless: true});
 
