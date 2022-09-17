@@ -26,11 +26,20 @@ app.get('/get-cards', async (req, res) => {
     const browser = await puppeteer.launch({
         'args' : [
             '--no-sandbox',
-            '--disable-setuid-sandbox'
+            '--disable-setuid-sandbox',
         ]
     });
 
     const page = await browser.newPage();
+
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.167 YaBrowser/22.7.5.1027 Yowser/2.5 Safari/537.36');
+    await page.emulateTimezone('Asia/Jerusalem');
+
+    // get the User Agent on the context of Puppeteer
+    const userAgent = await page.evaluate(() => navigator.userAgent );
+
+    // If everything correct then no 'HeadlessChrome' sub string on userAgent
+    console.log(userAgent);
 
     await page.goto(URL);
 
