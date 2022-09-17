@@ -39,7 +39,7 @@ app.get('/get-cards', async (req, res) => {
     })
 
     await browser.close();
-    res.send(`Now ${count} video cards on site`);
+    res.send(`Now ${count} video cards on site, it's cool!`);
 })
 
 app.post('/new-message', async (req, res) => {
