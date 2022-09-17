@@ -23,7 +23,13 @@ app.get('/healthy-check', async (req, res) => {
 app.get('/get-cards', async (req, res) => {
     var URL = 'https://ksp.co.il/web/cat/35..1044..15848';
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        'args' : [
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ]
+    });
+
     const page = await browser.newPage();
 
     await page.goto(URL);
