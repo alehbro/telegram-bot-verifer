@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {config} from 'dotenv'
 import express from 'express'
+import puppeteer from "puppeteer/lib/cjs/puppeteer/puppeteer.js";
 
 config();
 const app = express();
@@ -19,6 +20,22 @@ app.get('/healthy-check', async (req, res) => {
     res.send('All work pretty');
 });
 
+app.post('/get-cards', async (req, res) => {
+    var URL = 'https://ksp.co.il/web/cat/35..1044..15848';
+
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto(URL);
+
+    let count = await page.evaluate(() => {
+        return Array.from(document.querySelectorAll('.jss235')).length;
+    })
+
+    await browser.close();
+    res.send(`Now ${count} video cards on site`);
+})
+
 app.post('/new-message', async (req, res) => {
     const {message} = req.body;
     const messageText = message?.text?.toLowerCase()?.trim();
@@ -26,6 +43,8 @@ app.post('/new-message', async (req, res) => {
     if (!messageText || !chatId) {
         return res.sendStatus(400)
     }
+
+    console.log(`chatId: ${chatId}`);
 
     let responseText = 'I have nothing to say.';
 
