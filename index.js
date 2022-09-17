@@ -34,12 +34,14 @@ app.get('/get-cards', async (req, res) => {
 
     await page.goto(URL);
 
-    let count = await page.evaluate(() => {
-        return Array.from(document.querySelectorAll('.jss235')).length;
+    let resHtml = await page.evaluate(() => {
+        return document.body.outerHTML;
+        // return Array.from(document.querySelectorAll('.jss235')).length;
     })
 
     await browser.close();
-    res.send(`Now ${count} video cards on site, it's cool!`);
+    // res.send(`Now ${count} video cards on site, it's cool!`);
+    res.send(resHtml);
 })
 
 app.post('/new-message', async (req, res) => {
