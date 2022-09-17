@@ -14,6 +14,11 @@ app.use(
         extended: true
     })
 )
+
+app.get('/healthy-check', async (req, res) => {
+    res.send('All work pretty');
+});
+
 app.post('/new-message', async (req, res) => {
     const {message} = req.body;
     const messageText = message?.text?.toLowerCase()?.trim();
