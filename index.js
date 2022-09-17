@@ -1,7 +1,9 @@
-import axios from 'axios'
-import {config} from 'dotenv'
-import express from 'express'
-import puppeteer from "puppeteer/lib/cjs/puppeteer/puppeteer.js";
+import axios from 'axios';
+import {config} from 'dotenv';
+import express from 'express';
+import puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+
 
 config();
 const app = express();
@@ -16,7 +18,15 @@ app.use(
     })
 )
 
-app.get('/healthy-check', async (req, res) => {
+puppeteer.use(StealthPlugin());
+// puppeteer.use(
+//     AdblockerPlugin({
+//         blockTrackers: true
+//     })
+// );
+
+// healthy check
+app.get('/', async (req, res) => {
     res.send('All work pretty');
 });
 
@@ -27,12 +37,14 @@ app.get('/get-cards', async (req, res) => {
         'args' : [
             '--no-sandbox',
             '--disable-setuid-sandbox',
-        ]
+        ],
+        headless: true
     });
 
     const page = await browser.newPage();
 
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.167 YaBrowser/22.7.5.1027 Yowser/2.5 Safari/537.36');
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36');
+
     await page.emulateTimezone('Asia/Jerusalem');
 
     // get the User Agent on the context of Puppeteer
@@ -49,7 +61,7 @@ app.get('/get-cards', async (req, res) => {
     })
 
     await browser.close();
-    // res.send(`Now ${count} video cards on site, it's cool!`);
+    // res.send(`Now ${resHtml} video cards on site, it's cool!`);
     res.send(resHtml);
 })
 
