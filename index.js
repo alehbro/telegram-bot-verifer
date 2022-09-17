@@ -20,7 +20,7 @@ app.get('/healthy-check', async (req, res) => {
     res.send('All work pretty');
 });
 
-app.post('/get-cards', async (req, res) => {
+app.get('/get-cards', async (req, res) => {
     var URL = 'https://ksp.co.il/web/cat/35..1044..15848';
 
     const browser = await puppeteer.launch();
