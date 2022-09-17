@@ -81,7 +81,7 @@ app.post('/new-message', async (req, res) => {
             chat_id: chatId,
             text: responseText
         })
-        res.send('Done')
+        res.send('Done!')
     } catch (e) {
         console.log(e)
         res.send(e)
