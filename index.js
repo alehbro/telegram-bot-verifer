@@ -1,9 +1,6 @@
 import axios from 'axios';
 import {config} from 'dotenv';
 import express from 'express';
-import puppeteer from 'puppeteer-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-
 
 config();
 const app = express();
@@ -18,12 +15,20 @@ app.use(
     })
 )
 
-puppeteer.use(StealthPlugin());
-// puppeteer.use(
-//     AdblockerPlugin({
-//         blockTrackers: true
-//     })
-// );
+const sleep = () => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve('done');
+        }, 2000);
+    })
+}
+
+const intervalSending = async () => {
+    for (let i = 0; i < 3; i++) {
+        console.log(`now is ${i}`);
+        await sleep();
+    }
+}
 
 // healthy check
 app.get('/', async (req, res) => {
@@ -31,26 +36,10 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/get-cards', async (req, res) => {
-    var URL = process.env.URL_FOR_SCRAPING;
-
-    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox'], headless: true});
-
-    const page = await browser.newPage();
-
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36');
-
-    await page.emulateTimezone('Asia/Jerusalem');
-
-    await page.goto(URL);
-
-    let resHtml = await page.evaluate(() => {
-        return document.body.outerHTML;
-        // return Array.from(document.querySelectorAll('.jss235')).length;
-    })
-
-    await browser.close();
-    // res.send(`Now ${resHtml} video cards on site, it's cool!`);
-    res.send(resHtml);
+    const GPU_KSP_URL = 'https://ksp.co.il/m_action/api/category/35..1044..43845?sort=1';
+    const responseJson = await fetch(GPU_KSP_URL);
+    const items = (await responseJson.json()).result.items;
+    res.send(items);
 })
 
 app.post('/new-message', async (req, res) => {
@@ -76,6 +65,15 @@ app.post('/new-message', async (req, res) => {
         }
     }
 
+    if (messageText === 'test-interval') {
+        try {
+
+        } catch (e) {
+            console.log(e);
+            res.send(e);
+        }
+    }
+
     try {
         await axios.post(TELEGRAM_URI, {
             chat_id: chatId,
@@ -88,6 +86,7 @@ app.post('/new-message', async (req, res) => {
     }
 
 });
+
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
