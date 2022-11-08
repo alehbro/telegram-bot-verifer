@@ -36,10 +36,14 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/get-cards', async (req, res) => {
-    const GPU_KSP_URL = 'https://ksp.co.il/m_action/api/category/35..1044..43845?sort=1';
-    const responseJson = await fetch(GPU_KSP_URL);
-    const items = (await responseJson.json()).result.items;
-    res.send(items);
+    try {
+        const GPU_KSP_URL = 'https://ksp.co.il/m_action/api/category/35..1044..43845?sort=1';
+        const responseJson = await fetch(GPU_KSP_URL);
+        const items = (await responseJson.json()).result.items;
+        res.send(items);
+    } catch (e) {
+        res.send(e);
+    }
 })
 
 app.post('/new-message', async (req, res) => {
